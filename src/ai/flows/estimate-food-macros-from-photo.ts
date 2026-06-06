@@ -28,7 +28,7 @@ export type EstimateFoodMacrosOutput = z.infer<typeof EstimateFoodMacrosOutputSc
 
 const prompt = ai.definePrompt({
   name: 'estimateFoodMacrosPrompt',
-  model: 'googleai/gemini-1.5-flash',
+  model: 'googleai/gemini-2.0-flash',
   input: { schema: EstimateFoodMacrosInputSchema },
   output: { schema: EstimateFoodMacrosOutputSchema },
   prompt: `You are an expert nutritionist and food analyst.
