@@ -1,6 +1,18 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
+// This is the permission slip that allows your mobile app to connect
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
+
+// This handles the automatic pre-check your phone sends before uploading the photo
+export async function OPTIONS() {
+  return NextResponse.json({}, { headers: corsHeaders });
+}
+
 export async function POST(request: Request) {
   try {
     const input = await request.json();
@@ -28,8 +40,8 @@ export async function POST(request: Request) {
     const responseText = result.response.text();
     const cleanJson = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
     
-    return NextResponse.json(JSON.parse(cleanJson));
+    return NextResponse.json(JSON.parse(cleanJson), { headers: corsHeaders });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders });
   }
 }
