@@ -135,24 +135,24 @@ export function DashboardView({
         <h2 className="text-xs font-black tracking-widest text-muted-foreground uppercase">{t.allCycles}</h2>
         <div className="grid gap-3">
           {cycles.map(cycle => (
-            <div key={cycle.id} className="relative bg-[#2a2627] rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all">
-              <button 
+            <div key={cycle.id} className="group relative bg-[#2a2627] rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all">
+              <div 
+                className="w-full flex items-center gap-4 p-5 pr-24 cursor-pointer active:bg-white/5 transition-colors"
                 onClick={() => onManageSchedule(cycle)}
-                className="w-full flex items-center gap-4 p-5 pr-24 text-left active:scale-[0.98] transition-all"
               >
                 <div className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center text-pink-500">
                   <CalendarIcon size={20} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-black text-sm truncate">{cycle.name}</h4>
+                  <h4 className="font-black text-sm truncate uppercase tracking-tighter">{cycle.name}</h4>
                   <p className="text-[10px] font-bold text-muted-foreground uppercase">{t.created} {new Date(cycle.createdAt).toLocaleDateString().toUpperCase()}</p>
                 </div>
-              </button>
+              </div>
               
-              <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 z-10">
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
                 <button 
                   type="button"
-                  className="h-10 w-10 rounded-xl bg-white/10 text-muted-foreground hover:text-destructive hover:bg-destructive/20 transition-all flex items-center justify-center pointer-events-auto"
+                  className="h-10 w-10 rounded-xl bg-white/10 text-muted-foreground hover:text-destructive hover:bg-destructive/20 transition-all flex items-center justify-center"
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -161,7 +161,7 @@ export function DashboardView({
                 >
                   <Trash2 size={18} />
                 </button>
-                <ChevronRight size={18} className="text-muted-foreground pointer-events-none" />
+                <ChevronRight size={18} className="text-muted-foreground opacity-50" />
               </div>
             </div>
           ))}

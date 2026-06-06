@@ -124,7 +124,7 @@ export function Dashboard() {
               <Droplets className="mr-2 h-5 w-5 fill-white/20" />
               {t.water}
             </div>
-            {/* Beautiful Connected Quick Buttons */}
+            {/* Quick Adjustment Group */}
             <div className="flex items-center bg-white/10 rounded-full p-1 border border-white/5 shadow-inner">
               <Button 
                 variant="ghost" 
@@ -155,19 +155,19 @@ export function Dashboard() {
               </div>
             </div>
 
-            {/* Custom Log Input Group */}
-            <div className="flex items-center bg-white/10 rounded-2xl p-1.5 pl-3 border border-white/5 focus-within:border-white/30 transition-all">
+            {/* Integrated Custom Log Input */}
+            <div className="flex items-center bg-white/10 rounded-2xl p-1.5 pl-3 border border-white/5 focus-within:border-white/30 transition-all overflow-hidden">
               <Input 
                 type="number"
                 placeholder={t.ml}
                 value={customWater}
                 onChange={(e) => setCustomWater(e.target.value)}
-                className="bg-transparent border-none text-white placeholder:text-white/40 h-8 p-0 text-sm font-bold focus-visible:ring-0 shadow-none"
+                className="bg-transparent border-none text-white placeholder:text-white/40 h-8 p-0 text-sm font-bold focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none focus:ring-0 focus-visible:outline-none shadow-none outline-none"
               />
               <Button 
                 onClick={handleCustomWaterAdd}
                 size="sm"
-                className="bg-white text-sky-600 hover:bg-white/90 font-black rounded-xl h-8 px-4 text-[10px] tracking-widest uppercase"
+                className="bg-white text-sky-600 hover:bg-white/90 font-black rounded-xl h-8 px-4 text-[10px] tracking-widest uppercase flex-shrink-0"
               >
                 Log
               </Button>
