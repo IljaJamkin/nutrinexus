@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 246 13% 96%; /* #F5F4F8 - Pale Quartz */
+  --foreground: 240 10% 3.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 3.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 240 10% 3.9%;
+  --primary: 250 38% 45%; /* #56479F - Deep Royal Indigo */
+  --primary-foreground: 0 0% 98%;
+  --secondary: 224 81% 63%; /* #557EEB - Azure Energy */
+  --secondary-foreground: 0 0% 98%;
+  --muted: 240 4.8% 95.9%;
+  --muted-foreground: 240 3.8% 46.1%;
+  --accent: 224 81% 94%;
+  --accent-foreground: 224 81% 40%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 240 5.9% 90%;
+  --input: 240 5.9% 90%;
+  --ring: 250 38% 45%;
+  --radius: 1rem;
+}
+
+/* Black Theme (High Fidelity Dark Mode) */
+.theme-black {
+  --background: 330 3% 10%; /* #1e1b1c */
+  --foreground: 0 0% 98%;
+  --card: 330 3% 14%;
+  --card-foreground: 0 0% 98%;
+  --popover: 330 3% 10%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 327 92% 58%; /* #f43f5e (pink-500 equivalent) */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 330 3% 18%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 330 3% 18%;
+  --muted-foreground: 0 0% 63.9%;
+  --accent: 327 92% 58% / 0.1;
+  --accent-foreground: 327 92% 58%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 330 3% 20%;
+  --input: 330 3% 20%;
+  --ring: 327 92% 58%;
+}
+
+/* Purple Theme (Brand Focus) */
+.theme-purple {
+  --background: 250 38% 15%;
+  --foreground: 250 38% 95%;
+  --card: 250 38% 20%;
+  --card-foreground: 250 38% 98%;
+  --popover: 250 38% 15%;
+  --popover-foreground: 250 38% 95%;
+  --primary: 250 60% 70%;
+  --primary-foreground: 250 38% 10%;
+  --secondary: 250 38% 25%;
+  --secondary-foreground: 250 38% 95%;
+  --muted: 250 38% 25%;
+  --muted-foreground: 250 10% 70%;
+  --accent: 250 38% 30%;
+  --accent-foreground: 250 38% 95%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 250 38% 30%;
+  --input: 250 38% 30%;
+  --ring: 250 60% 70%;
+}
+
+@layer base {
+  html {
+    scrollbar-gutter: stable;
+  }
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-body transition-colors duration-300;
+    -webkit-tap-highlight-color: transparent;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-headline;
+  }
+
+  /* Hide number input spinners globally */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+}
+
+.macro-bar-container {
+  @apply relative h-3 w-full bg-muted rounded-full overflow-hidden;
+}
+
+.macro-bar-fill {
+  @apply h-full rounded-full transition-all duration-1000 ease-out;
+}
+
+/* Custom transitions for the dashboard views */
+.view-enter {
+  @apply animate-in fade-in slide-in-from-right-4 duration-300;
+}
+.view-exit {
+  @apply animate-out fade-out slide-out-to-left-4 duration-300;
+}

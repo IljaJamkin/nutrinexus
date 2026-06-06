@@ -1,0 +1,51 @@
+
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "User's physiological data and nutrition targets.",
+      "type": "object",
+      "properties": {
+        "weight": { "type": "number" },
+        "height": { "type": "number" },
+        "age": { "type": "number" },
+        "gender": { "type": "string", "enum": ["male", "female"] },
+        "activityLevel": { "type": "number" },
+        "targetCalories": { "type": "number" },
+        "targetProtein": { "type": "number" },
+        "targetCarbs": { "type": "number" },
+        "targetFats": { "type": "number" }
+      },
+      "required": ["weight", "height", "age", "gender", "activityLevel"]
+    },
+    "FoodLog": {
+      "title": "Food Log",
+      "description": "A single entry of food consumed.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "foodName": { "type": "string" },
+        "calories": { "type": "number" },
+        "protein": { "type": "number" },
+        "carbs": { "type": "number" },
+        "fats": { "type": "number" },
+        "timestamp": { "type": "object" },
+        "image": { "type": "string" }
+      },
+      "required": ["userId", "foodName", "calories", "timestamp"]
+    }
+  },
+  "auth": {
+    "providers": ["password"]
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/backend/entities/UserProfile" },
+      "description": "Store user profiles."
+    },
+    "/logs/{logId}": {
+      "schema": { "$ref": "#/backend/entities/FoodLog" },
+      "description": "Store food logs."
+    }
+  }
+}
