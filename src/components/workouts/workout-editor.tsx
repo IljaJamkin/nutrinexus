@@ -139,15 +139,17 @@ export function WorkoutEditor({ workout, onCancel, onSave }: { workout: Workout,
                     </div>
                  </div>
 
-                 {/* Perfectly Aligned Input Grid */}
-                 <div className="grid grid-cols-4 gap-3">
-                   <QuickAdjustInput 
-                      label={t.sets}
-                      value={ex.sets}
-                      onChange={(val) => updateExercise(ex.id, { sets: val })}
-                   />
+                 {/* Grid layout for inputs: 3 - 4 - 3 distribution */}
+                 <div className="grid grid-cols-10 gap-2">
+                   <div className="col-span-3">
+                    <QuickAdjustInput 
+                        label={t.sets}
+                        value={ex.sets}
+                        onChange={(val) => updateExercise(ex.id, { sets: val })}
+                    />
+                   </div>
 
-                   <div className="col-span-2 space-y-1.5">
+                   <div className="col-span-4 space-y-1.5">
                      <div className="flex justify-between items-center h-6">
                        <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">
                          {ex.type === 'reps' ? t.reps : t.timeSec}
@@ -157,7 +159,7 @@ export function WorkoutEditor({ workout, onCancel, onSave }: { workout: Workout,
                           <Switch 
                             checked={ex.type === 'hold'} 
                             onCheckedChange={(checked) => updateExercise(ex.id, { type: checked ? 'hold' : 'reps' })}
-                            className="scale-125"
+                            className="scale-110"
                           />
                        </div>
                      </div>
@@ -166,7 +168,7 @@ export function WorkoutEditor({ workout, onCancel, onSave }: { workout: Workout,
                           type="number" 
                           value={(ex.type === 'reps' ? ex.reps : ex.timeSeconds) || 0} 
                           onChange={(e) => updateExercise(ex.id, ex.type === 'reps' ? { reps: Number(e.target.value) } : { timeSeconds: Number(e.target.value) })}
-                          className="rounded-xl h-10 text-center font-bold bg-white/5 border-none focus-visible:ring-0 pr-16 shadow-none outline-none"
+                          className="rounded-xl h-10 text-center font-bold bg-white/5 border-none focus-visible:ring-0 pr-12 shadow-none outline-none"
                         />
                         <div className="absolute right-0.5 top-0.5 bottom-0.5 flex gap-0.5">
                           <button 
@@ -176,9 +178,9 @@ export function WorkoutEditor({ workout, onCancel, onSave }: { workout: Workout,
                               const newVal = Math.max(0, current - 1);
                               updateExercise(ex.id, ex.type === 'reps' ? { reps: newVal } : { timeSeconds: newVal });
                             }}
-                            className="w-7 h-full flex items-center justify-center rounded-lg bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-pink-500 transition-all active:scale-90"
+                            className="w-5 h-full flex items-center justify-center rounded-lg bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-pink-500 transition-all active:scale-90"
                           >
-                            <Minus size={14} />
+                            <Minus size={12} />
                           </button>
                           <button 
                             type="button"
@@ -187,19 +189,21 @@ export function WorkoutEditor({ workout, onCancel, onSave }: { workout: Workout,
                               const newVal = current + 1;
                               updateExercise(ex.id, ex.type === 'reps' ? { reps: newVal } : { timeSeconds: newVal });
                             }}
-                            className="w-7 h-full flex items-center justify-center rounded-lg bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-pink-500 transition-all active:scale-90"
+                            className="w-5 h-full flex items-center justify-center rounded-lg bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-pink-500 transition-all active:scale-90"
                           >
-                            <Plus size={14} />
+                            <Plus size={12} />
                           </button>
                         </div>
                      </div>
                    </div>
 
-                   <QuickAdjustInput 
-                      label="kg"
-                      value={ex.weight}
-                      onChange={(val) => updateExercise(ex.id, { weight: val })}
-                   />
+                   <div className="col-span-3">
+                    <QuickAdjustInput 
+                        label="kg"
+                        value={ex.weight}
+                        onChange={(val) => updateExercise(ex.id, { weight: val })}
+                    />
+                   </div>
                  </div>
 
                  <div className="space-y-1.5 pt-1">
@@ -238,20 +242,20 @@ function QuickAdjustInput({ label, value, onChange }: { label: string, value: nu
           type="number" 
           value={value || 0} 
           onChange={(e) => onChange(Number(e.target.value))}
-          className="rounded-xl h-10 pr-14 bg-white/5 border-none font-bold text-center focus-visible:ring-0 shadow-none outline-none"
+          className="rounded-xl h-10 pr-12 bg-white/5 border-none font-bold text-center focus-visible:ring-0 shadow-none outline-none"
         />
         <div className="absolute right-0.5 top-0.5 bottom-0.5 flex gap-0.5">
           <button 
             type="button"
             onClick={() => onChange(Math.max(0, value - 1))}
-            className="w-6 h-full flex items-center justify-center rounded-lg bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-pink-500 transition-all active:scale-90"
+            className="w-5 h-full flex items-center justify-center rounded-lg bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-pink-500 transition-all active:scale-90"
           >
             <Minus size={12} />
           </button>
           <button 
             type="button"
             onClick={() => onChange(value + 1)}
-            className="w-6 h-full flex items-center justify-center rounded-lg bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-pink-500 transition-all active:scale-90"
+            className="w-5 h-full flex items-center justify-center rounded-lg bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-pink-500 transition-all active:scale-90"
           >
             <Plus size={12} />
           </button>
