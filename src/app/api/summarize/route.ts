@@ -6,7 +6,7 @@ export async function POST(request: Request) {
     const input = await request.json();
     const apiKey = process.env.GEMINI_API_KEY || "AQ.Ab8RN6InRqsNdCTon_CzYqq88zgoxjAq_D-36ew7W3CKaXTQzg";
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
     const foodList = input.foodLogs.length > 0 
       ? input.foodLogs.map((f: any) => `- ${f.foodName}: ${f.calories} kcal, ${f.protein}g Protein, ${f.carbs}g Carbs, ${f.fats}g Fats`).join('\n') 

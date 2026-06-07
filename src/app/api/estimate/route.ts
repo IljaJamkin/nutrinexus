@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     const input = await request.json();
     const apiKey = process.env.GEMINI_API_KEY || "AQ.Ab8RN6InRqsNdCTon_CzYqq88zgoxjAq_D-36ew7W3CKaXTQzg";
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
     let promptText = "You are an expert nutritionist. Estimate calories (kcal), protein (g), fats (g), and carbohydrates (g) for this food. Provide a textual 'foodDescription' and a 'confidence' level (High, Medium, Low). Return ONLY a valid JSON object with keys: calories, protein, fats, carbohydrates, foodDescription, confidence.";
 
