@@ -37,7 +37,7 @@ export type SummarizeDailyNutritionOutput = z.infer<typeof SummarizeDailyNutriti
 
 const prompt = ai.definePrompt({
   name: 'summarizeDailyNutritionPrompt',
-  model: 'googleai/gemini-1.5-flash-latest',
+  model: 'googleai/gemini-1.5-flash',
   input: { schema: SummarizeDailyNutritionInputSchema },
   output: { schema: SummarizeDailyNutritionOutputSchema },
   prompt: `You are an expert nutritionist providing a daily summary. Analyze the following food logs against the user's goals for {{currentDate}}.
