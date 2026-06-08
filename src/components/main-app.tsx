@@ -2,23 +2,21 @@
 "use client";
 
 import { useState } from "react";
-import { LayoutDashboard, Camera, ClipboardList, UserCircle, Dumbbell } from "lucide-react";
+import { LayoutDashboard, Camera, ClipboardList, UserCircle } from "lucide-react";
 import { Dashboard } from "@/components/dashboard";
 import { NutriScan } from "@/components/nutriscan";
 import { DailyLogs } from "@/components/daily-logs";
 import { Settings } from "@/components/settings";
-import { Workouts } from "@/components/workouts";
 import { useI18n } from "@/lib/i18n-context";
 import { cn } from "@/lib/utils";
 
 export function MainApp() {
-  const [activeTab, setActiveTab] = useState<"dashboard" | "scan" | "workouts" | "logs" | "settings">("dashboard");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "scan" | "logs" | "settings">("dashboard");
   const { t } = useI18n();
 
   const tabs = [
     { id: "dashboard", label: t.dashboard, icon: LayoutDashboard },
     { id: "scan", label: t.nutriScan, icon: Camera },
-    { id: "workouts", label: t.workouts, icon: Dumbbell },
     { id: "logs", label: t.logs, icon: ClipboardList },
     { id: "settings", label: t.settings, icon: UserCircle },
   ];
@@ -28,7 +26,6 @@ export function MainApp() {
       <main className="flex-1 overflow-y-auto pb-32 px-4 pt-6 max-w-md mx-auto w-full">
         {activeTab === "dashboard" && <Dashboard />}
         {activeTab === "scan" && <NutriScan onSuccess={() => setActiveTab("logs")} />}
-        {activeTab === "workouts" && <Workouts />}
         {activeTab === "logs" && <DailyLogs />}
         {activeTab === "settings" && <Settings />}
       </main>
