@@ -49,7 +49,7 @@ export async function summarizeDailyNutrition(
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer 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",
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
