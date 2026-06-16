@@ -50,8 +50,7 @@ export async function estimateFoodMacrosFromPhoto(
       },
       body: JSON.stringify({
         model: "google/gemini-1.5-flash",
-        messages: [{ role: "user", content: content }],
-        response_format: { type: "json_object" }
+        messages: [{ role: "user", content: content }]
       })
     });
 

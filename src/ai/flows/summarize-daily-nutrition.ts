@@ -54,8 +54,7 @@ export async function summarizeDailyNutrition(
       },
       body: JSON.stringify({
         model: "google/gemini-1.5-flash",
-        messages: [{ role: "user", content: promptText }],
-        response_format: { type: "json_object" }
+        messages: [{ role: "user", content: promptText }]
       })
     });
 
