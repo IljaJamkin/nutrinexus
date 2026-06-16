@@ -1,63 +1,69 @@
-
 'use server';
 
-import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+export type EstimateFoodMacrosInput = {
+  photoDataUri?: string;
+  description?: string;
+};
 
-const EstimateFoodMacrosInputSchema = z.object({
-  photoDataUri: z
-    .string()
-    .optional()
-    .describe(
-      "A photo of a food item, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
-    ),
-  description: z.string().optional().describe('A textual description of the food item.'),
-});
-
-const EstimateFoodMacrosOutputSchema = z.object({
-  calories: z.number().describe('Estimated total calories in kcal.'),
-  protein: z.number().describe('Estimated protein content in grams.'),
-  fats: z.number().describe('Estimated fat content in grams.'),
-  carbohydrates: z.number().describe('Estimated carbohydrate content in grams.'),
-  foodDescription: z.string().describe('A brief identification of the food item found in the photo or description.'),
-  confidence: z.enum(['High', 'Medium', 'Low']).describe('The level of confidence in the estimation.'),
-});
-
-export type EstimateFoodMacrosInput = z.infer<typeof EstimateFoodMacrosInputSchema>;
-export type EstimateFoodMacrosOutput = z.infer<typeof EstimateFoodMacrosOutputSchema>;
-
-const prompt = ai.definePrompt({
-  name: 'estimateFoodMacrosPrompt',
-  model: 'googleai/gemini-1.5-flash',
-  input: { schema: EstimateFoodMacrosInputSchema },
-  output: { schema: EstimateFoodMacrosOutputSchema },
-  prompt: `You are an expert nutritionist and food analyst.
-  
-  Your task is to estimate the nutritional content (calories, protein, fats, and carbohydrates) of the food provided in the photo or described in text.
-  
-  - If a photo is provided, prioritize it for the analysis.
-  - If only text is provided, base your analysis on that.
-  - Provide a brief description of what you identified.
-  - State your confidence level (High, Medium, or Low).
-  
-  {{#if description}}
-  User Description: {{{description}}}
-  {{/if}}
-  
-  {{#if photoDataUri}}
-  Photo: {{media url=photoDataUri}}
-  {{/if}}`,
-});
+export type EstimateFoodMacrosOutput = {
+  calories: number;
+  protein: number;
+  fats: number;
+  carbohydrates: number;
+  foodDescription: string;
+  confidence: 'High' | 'Medium' | 'Low';
+};
 
 export async function estimateFoodMacrosFromPhoto(
   input: EstimateFoodMacrosInput
 ): Promise<EstimateFoodMacrosOutput> {
   try {
-    const { output } = await prompt(input);
-    if (!output) {
-      throw new Error("AI failed to return nutritional data.");
+    const content: any[] = [];
+    
+    const promptText = `You are an expert nutritionist. Estimate the nutritional content of the provided food.
+    Respond ONLY with a valid JSON object matching this exact structure:
+    {
+      "calories": number (estimated kcal),
+      "protein": number (grams),
+      "fats": number (grams),
+      "carbohydrates": number (grams),
+      "foodDescription": string (brief identification),
+      "confidence": "High" | "Medium" | "Low"
     }
-    return output;
+    Do not include markdown blocks like \`\`\`json. Just the raw JSON object.`;
+
+    content.push({ type: "text", text: promptText });
+
+    if (input.description) {
+      content.push({ type: "text", text: `User Description: ${input.description}` });
+    }
+    
+    if (input.photoDataUri) {
+      content.push({ type: "image_url", image_url: { url: input.photoDataUri } });
+    }
+
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer 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",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "openrouter/free",
+        messages: [{ role: "user", content: content }],
+        response_format: { type: "json_object" }
+      })
+    });
+
+    if (!response.ok) throw new Error(`API Error: ${response.status}`);
+
+    const data = await response.json();
+    const aiResult = data.choices[0].message.content;
+    
+    // Clean markdown if the AI accidentally includes it
+    const cleanJson = aiResult.replace(/```json|```/g, '').trim();
+    return JSON.parse(cleanJson) as EstimateFoodMacrosOutput;
+
   } catch (error: any) {
     console.error("AI Estimation Error:", error);
     throw new Error(`Nutrition Analysis Failed: ${error.message}`);

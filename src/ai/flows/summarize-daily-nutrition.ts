@@ -1,83 +1,74 @@
-
 'use server';
-/**
- * @fileOverview Daily nutrition summary AI flow.
- *
- * - summarizeDailyNutrition - A function that generates a textual summary of daily intake.
- * - SummarizeDailyNutritionInput - Input schema for the flow.
- * - SummarizeDailyNutritionOutput - Output schema for the flow.
- */
 
-import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+export type SummarizeDailyNutritionInput = {
+  foodLogs: Array<{
+    foodName: string;
+    calories: number;
+    protein: number;
+    carbs: number;
+    fats: number;
+  }>;
+  userProfile: {
+    targetCalories: number;
+    targetProtein: number;
+    targetCarbs: number;
+    targetFats: number;
+  };
+  currentDate: string;
+};
 
-const SummarizeDailyNutritionInputSchema = z.object({
-  foodLogs: z.array(z.object({
-    foodName: z.string(),
-    calories: z.number(),
-    protein: z.number(),
-    carbs: z.number(),
-    fats: z.number(),
-  })).describe('The list of food items logged for the day.'),
-  userProfile: z.object({
-    targetCalories: z.number(),
-    targetProtein: z.number(),
-    targetCarbs: z.number(),
-    targetFats: z.number(),
-  }).describe('The user\'s target nutrition goals.'),
-  currentDate: z.string().describe('The current date.'),
-});
-
-const SummarizeDailyNutritionOutputSchema = z.object({
-  summary: z.string().describe('A concise summary of the daily nutritional intake.'),
-});
-
-export type SummarizeDailyNutritionInput = z.infer<typeof SummarizeDailyNutritionInputSchema>;
-export type SummarizeDailyNutritionOutput = z.infer<typeof SummarizeDailyNutritionOutputSchema>;
-
-const prompt = ai.definePrompt({
-  name: 'summarizeDailyNutritionPrompt',
-  model: 'googleai/gemini-1.5-flash',
-  input: { schema: SummarizeDailyNutritionInputSchema },
-  output: { schema: SummarizeDailyNutritionOutputSchema },
-  prompt: `You are an expert nutritionist providing a daily summary. Analyze the following food logs against the user's goals for {{currentDate}}.
-  
-  User's Goals:
-  - Calories: {{userProfile.targetCalories}} kcal
-  - Protein: {{userProfile.targetProtein}} g
-  - Carbs: {{userProfile.targetCarbs}} g
-  - Fats: {{userProfile.targetFats}} g
-
-  Daily Logs:
-  {{#each foodLogs}}
-  - {{foodName}}: {{calories}} kcal, {{protein}}g Protein, {{carbs}}g Carbs, {{fats}}g Fats
-  {{/each}}
-
-  Provide a concise, motivating summary (3-5 sentences) highlighting how they are tracking against their goals.`,
-});
+export type SummarizeDailyNutritionOutput = {
+  summary: string;
+};
 
 export async function summarizeDailyNutrition(
   input: SummarizeDailyNutritionInput
 ): Promise<SummarizeDailyNutritionOutput> {
-  return summarizeDailyNutritionFlow(input);
-}
+  try {
+    const logsText = input.foodLogs.map(log => 
+      `- ${log.foodName}: ${log.calories} kcal, ${log.protein}g Protein, ${log.carbs}g Carbs, ${log.fats}g Fats`
+    ).join('\n');
 
-const summarizeDailyNutritionFlow = ai.defineFlow(
-  {
-    name: 'summarizeDailyNutritionFlow',
-    inputSchema: SummarizeDailyNutritionInputSchema,
-    outputSchema: SummarizeDailyNutritionOutputSchema,
-  },
-  async (input) => {
-    try {
-      const { output } = await prompt(input);
-      if (!output) {
-        throw new Error("AI failed to generate a summary.");
-      }
-      return output;
-    } catch (error: any) {
-      console.error("Genkit Summary Error:", error);
-      throw new Error(`Summary Generation Failed: ${error.message}`);
+    const promptText = `You are an expert nutritionist. Analyze these food logs against the user's goals for ${input.currentDate}.
+    
+    User's Goals:
+    - Calories: ${input.userProfile.targetCalories} kcal
+    - Protein: ${input.userProfile.targetProtein} g
+    - Carbs: ${input.userProfile.targetCarbs} g
+    - Fats: ${input.userProfile.targetFats} g
+
+    Daily Logs:
+    ${logsText}
+
+    Respond ONLY with a valid JSON object matching this exact structure:
+    {
+      "summary": "A brief 3-sentence summary of how they are tracking against goals."
     }
+    Do not include markdown blocks.`;
+
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer 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",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "openrouter/free",
+        messages: [{ role: "user", content: promptText }],
+        response_format: { type: "json_object" }
+      })
+    });
+
+    if (!response.ok) throw new Error(`API Error: ${response.status}`);
+
+    const data = await response.json();
+    const aiResult = data.choices[0].message.content;
+    
+    const cleanJson = aiResult.replace(/```json|```/g, '').trim();
+    return JSON.parse(cleanJson) as SummarizeDailyNutritionOutput;
+
+  } catch (error: any) {
+    console.error("Summary Error:", error);
+    throw new Error(`Summary Generation Failed: ${error.message}`);
   }
-);
+}
