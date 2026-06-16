@@ -53,12 +53,15 @@ export async function summarizeDailyNutrition(
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "google/gemini-1.5-flash",
+        model: "google/gemini-flash-1.5",
         messages: [{ role: "user", content: promptText }]
       })
     });
 
-    if (!response.ok) throw new Error(`API Error: ${response.status}`);
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`API Error: ${response.status} - ${errorText}`);
+    }
 
     const data = await response.json();
     const aiResult = data.choices[0].message.content;
