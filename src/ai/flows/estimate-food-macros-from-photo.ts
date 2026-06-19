@@ -45,7 +45,7 @@ export async function estimateFoodMacrosFromPhoto(
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": "Bearer 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",
+        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
