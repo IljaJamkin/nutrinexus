@@ -95,9 +95,7 @@ export async function estimateFoodMacrosFromPhoto(
       },
       body: JSON.stringify({
         model: "google/gemini-3.5-flash",
-        messages: [{ role: "user", content: content }],
-        // The answer is a small JSON object, so cap the length (and the cost) of each reply
-        max_tokens: 400
+        messages: [{ role: "user", content: content }]
       })
     });
 
